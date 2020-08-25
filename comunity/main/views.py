@@ -43,3 +43,12 @@ def comment_create(request, post_id):
         messages.info(request, "로그인이 필요합니다.")
     return HttpResponseRedirect(reverse('detail',args=(post_id,)))
 
+def comment_delete(request, post_id, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if comment.author != request.user:
+        return HttpResponseRedirect(reverse('detail', args=(post_id,)))
+    comment.delete()
+    return HttpResponseRedirect(reverse('detail', args=(post_id,)))
+
+def comment_update(request, post_id, comment_id):
+    return render(request, 'detail.html')

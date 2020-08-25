@@ -45,7 +45,14 @@
             {% for comment in comments %}
                 <p>{{comment.author}} {{comment.created|date:"D d M Y"}}</p>
                 <p>{{comment.content}}</p> 
+
+                {% if comment.author == user %}
+                <a href="{% url 'comment_update' ppost.id comment.id %}">수정</a>
+                <a href="{% url 'comment_delete' ppost.id comment.id %}">삭제</a>
+                {% endif %}
+    
             {% endfor %}
+
         </div>
     </div>
 
