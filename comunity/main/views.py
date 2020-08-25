@@ -42,3 +42,4 @@ def comment_create(request, post_id):
     else:
         messages.info(request, "로그인이 필요합니다.")
     return HttpResponseRedirect(reverse('detail',args=(post_id,)))
+
