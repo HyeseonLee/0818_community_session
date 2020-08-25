@@ -5,6 +5,7 @@ from .forms import CommentForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
+from datetime import datetime
 
 class IndexView(generic.ListView):
     template_name = 'home.html'
@@ -51,4 +52,18 @@ def comment_delete(request, post_id, comment_id):
     return HttpResponseRedirect(reverse('detail', args=(post_id,)))
 
 def comment_update(request, post_id, comment_id):
-    return render(request, 'detail.html')
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if comment.author != request.user:
+        return HttpResponseRedirect(reverse('detail', args=(post_id,)))
+    
+    if request.method=='POST':
+        comment_form = CommentForm(request.POST, instance=comment)
+        if comment_form.is_valid():
+            comment.created = datetime.now()
+            comment_form.save()        
+            return HttpResponseRedirect(reverse('detail', args=(post_id,)))
+    else:
+        comment_form = CommentForm(request.POST)
+
+    return render(request, 'comment_update.html', {'comment_form':comment_form})
